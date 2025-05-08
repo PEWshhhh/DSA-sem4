@@ -1,0 +1,161 @@
+#include <iostream>
+#include <queue>
+#include <stack>
+
+using namespace std;
+
+void DFS(int adjList[6][6], int start, bool visited[6], int nodeCount) {
+    stack<int> s;
+    s.push(start);
+    visited[start] = true;
+
+    while (!s.empty()) {
+        int node = s.top();
+        s.pop();
+        cout << node << " ";  // Print the node during traversal
+
+        for (int i = 0; i < nodeCount; ++i) {
+            if (adjList[node][i] == 1 && !visited[i]) {
+                visited[i] = true;
+                s.push(i);
+            }
+        }
+    }
+}
+
+void BFS(int adjList[6][6], int start, bool visited[6], int nodeCount) {
+    queue<int> q;
+    q.push(start);
+    visited[start] = true;
+
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        cout << node << " ";  // Print the node during traversal
+
+        for (int i = 0; i < nodeCount; ++i) {
+            if (adjList[node][i] == 1 && !visited[i]) {
+                visited[i] = true;
+                q.push(i);
+            }
+        }
+    }
+}
+
+int main() {
+    int nodeCount;
+    cout << "Enter the number of nodes: ";
+    cin >> nodeCount;
+
+    // Adjust the adjacency matrix size based on the number of nodes
+    int adjList[6][6] = {0}; // Initialize adjacency matrix (can hold up to 6 nodes)
+
+    // Array to store names or identifiers of nodes (landmarks)
+    string nodes[nodeCount];
+
+    // Input nodes' names (or identifiers)
+    cout << "Enter the names/identifiers for the nodes:\n";
+    for (int i = 0; i < nodeCount; i++) {
+        cout << "Enter name for node " << i << ": ";
+        cin >> nodes[i];
+    }
+
+    // Input edges between nodes
+    int edges;
+    cout << "Enter the number of edges: ";
+    cin >> edges;
+
+    cout << "Enter the edges (node1 node2):\n";
+    for (int i = 0; i < edges; i++) {
+        int node1, node2;
+        cout << "Enter edge " << i + 1 << ": ";
+        cin >> node1 >> node2;
+        
+        // Mark the adjacency matrix for both directions (undirected graph)
+        adjList[node1][node2] = 1;
+        adjList[node2][node1] = 1;
+    }
+
+    int choice, startNode;
+    bool visited[6]; // Array to keep track of visited nodes
+
+    while (true) {
+        // Menu
+        cout << "\nGraph Traversal Menu:\n";
+        cout << "1. Perform DFS\n";
+        cout << "2. Perform BFS\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                // Reset visited array
+                for (int i = 0; i < 6; i++) visited[i] = false;
+                
+                cout << "Enter starting node for DFS (0-" << nodeCount - 1 << "): ";
+                cin >> startNode;
+                cout << "DFS Traversal: ";
+                DFS(adjList, startNode, visited, nodeCount);
+                cout << endl;
+                break;
+
+            case 2:
+                // Reset visited array
+                for (int i = 0; i < 6; i++) visited[i] = false;
+                
+                cout << "Enter starting node for BFS (0-" << nodeCount - 1 << "): ";
+                cin >> startNode;
+                cout << "BFS Traversal: ";
+                BFS(adjList, startNode, visited, nodeCount);
+                cout << endl;
+                break;
+
+            case 3:
+                cout << "Exiting the program.\n";
+                return 0;
+
+            default:
+                cout << "Invalid choice! Please enter a valid option.\n";
+        }
+    }
+    return 0;
+}
+
+
+// Enter the number of nodes: 5
+// Enter the names/identifiers for the nodes:
+// Enter name for node 0: College
+// Enter name for node 1: Library
+// Enter name for node 2: Park
+// Enter name for node 3: Cafe
+// Enter name for node 4: Mall
+// Enter the number of edges: 4
+// Enter edge 1: 0 1
+// Enter edge 2: 0 2
+// Enter edge 3: 1 4
+// Enter edge 4: 2 3
+
+// Graph Traversal Menu:
+// 1. Perform DFS
+// 2. Perform BFS
+// 3. Exit
+// Enter your choice: 1
+// Enter starting node for DFS (0-4): 0
+// DFS Traversal: 0 2 3 1 4 
+
+// Graph Traversal Menu:
+// 1. Perform DFS
+// 2. Perform BFS
+// 3. Exit
+// Enter your choice: 2
+// Enter starting node for BFS (0-4): 0
+// BFS Traversal: 0 1 2 4 3 
+
+// Graph Traversal Menu:
+// 1. Perform DFS
+// 2. Perform BFS
+// 3. Exit
+// Enter your choice: 3
+// Exiting the program.
+

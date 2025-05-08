@@ -1,0 +1,117 @@
+#include <iostream>
+using namespace std;
+
+class OfficeNetwork
+{
+    int c[5][5]; 
+    int m;     
+    string o[5];
+
+public:
+    OfficeNetwork()
+    {
+        for(int i=0;i<5;i++){
+            for(int j=0;j<5;j++){
+                c[i][j]=100; 
+            }
+        }
+    }
+
+    void inputNetwork()
+    {
+        int e, u, v, w;
+        cout<<"Enter the number of offices (max 5): "<<endl;
+        cin>>m;
+
+        cout<<"Enter names for each office:"<<endl;
+        for(int i=0;i<m;i++){
+            cout<<"Office "<<i<<": ";
+            cin>>o[i];
+        }
+
+        cout<<"Enter the number of phone lines: "<<endl;
+        cin>>e;
+
+        for(int i=0;i<e;i++){
+            cout<<"Enter edge "<<i+1<<" (Office1 Office2 Cost): "<<endl;
+            cin>>u>>v>>w; 
+            c[u][v]=w;
+            c[v][u]=w;
+        }
+    }
+
+    void displayMatrix()
+    {
+        cout<<"Cost Matrix (100 = No Connection): "<<endl;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<m;j++){
+                cout<<c[i][j]<<"\t";
+            }
+            cout<<endl;
+        }
+    }
+
+    void findOptimalLeases()
+    {
+        int v[5]={0};
+        int d[5];
+        int f[5];
+        int b[5][5]={0};
+        int s=0;
+
+        v[0]=1;
+        d[0]=0;
+        for(int i=1;i<m;i++){
+            d[i]=c[0][i];
+            f[i]=0;
+        }
+
+        int r = m - 1;
+
+        while(r > 0) {
+            int min=100, x;
+
+            for(int i=1;i<m;i++){
+                if(!v[i] && d[i]<min){
+                    min=d[i];
+                    x=i;
+                }
+            }
+
+            b[f[x]][x]=min;
+            b[x][f[x]]=min;
+            s += min;
+            v[x]=1;
+            r--;
+
+            for(int i=1;i<m;i++){
+                if(!v[i] && c[x][i]<d[i]){
+                    d[i]=c[x][i];
+                    f[i]=x;
+                }
+            }
+        }
+
+        cout<<endl;
+        cout<<"Minimum cost: "<<s<<endl;
+        cout<<"Optimal connections to lease: "<<endl;
+        for(int i=0;i<m;i++){
+            for(int j=i+1;j<m;j++) {
+                if(b[i][j]!=0) {
+                    cout<<o[i]<<"-"<<o[j]<<": $"<<b[i][j]<<endl;
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    OfficeNetwork g;
+    g.inputNetwork();
+    g.displayMatrix();
+    g.findOptimalLeases();
+    return 0;
+}
+//3
+//012 132 231
+//

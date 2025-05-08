@@ -1,0 +1,180 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node {
+public:
+    int tele;
+    string name;
+    Node* next;
+
+    Node(string nm, int t) {
+        name = nm;
+        tele = t;
+        next = NULL;
+    }
+};
+
+class Hashsepratechaining {
+    Node* Hashtable[10] = {NULL};
+
+public:
+    void insert(string name, int tele) {
+        Node* p = new Node(name, tele);
+        int loc = tele % 10;
+
+        if (Hashtable[loc] == NULL) {
+            Hashtable[loc] = p;
+        } else {
+            Node* temp = Hashtable[loc];
+            while (temp->next != NULL) {
+                temp = temp->next;
+            }
+            temp->next = p;
+        }
+    }
+
+    void search(int key) {
+        int loc = key % 10;
+        Node* temp = Hashtable[loc];
+        int comparisons = 0;
+
+        while (temp != NULL) {
+            comparisons++;
+            if (temp->tele == key) {
+                cout << "Name: " << temp->name << endl;
+                cout << "Telephone: " << temp->tele << endl;
+                cout << "Comparisons: " << comparisons << endl;
+                return;
+            }
+            temp = temp->next;
+        }
+        cout << "Number not found." << endl;
+        cout << "Comparisons: " << comparisons << endl;
+    }
+
+    void display() {
+        for (int i = 0; i < 10; i++) {
+            Node* temp = Hashtable[i];
+            while (temp != NULL) {
+                cout << "Name: " << temp->name << endl;
+                cout << "Telephone: " << temp->tele << endl;
+                temp = temp->next;
+            }
+        }
+    }
+};
+
+class HashLinearProbing {
+    string names[10];
+    int telephone[10];
+
+public:
+    HashLinearProbing() {
+        for (int i = 0; i < 10; i++) {
+            telephone[i] = -1;
+            names[i] = "";
+        }
+    }
+
+    void insert(string name, int tele) {
+        int loc = tele % 10;
+        int originalLoc = loc;
+
+        while (telephone[loc] != -1) {
+            loc = (loc + 1) % 10;
+            if (loc == originalLoc) {
+                cout << "Hash Table is Full!" << endl;
+                return;
+            }
+        }
+        names[loc] = name;
+        telephone[loc] = tele;
+    }
+
+    void search(int key) {
+        int loc = key % 10;
+        int originalLoc = loc;
+        int comparisons = 0;
+
+        while (telephone[loc] != -1) {
+            comparisons++;
+            if (telephone[loc] == key) {
+                cout << "Name: " << names[loc] << ", Telephone: " << telephone[loc] << endl;
+                cout << "Comparisons: " << comparisons << endl;
+                return;
+            }
+            loc = (loc + 1) % 10;
+            if (loc == originalLoc) break;
+        }
+
+        cout << "Number not found." << endl;
+        cout << "Comparisons: " << comparisons << endl;
+    }
+
+    void display() {
+        for (int i = 0; i < 10; i++) {
+            if (telephone[i] != -1) {
+                cout << "Name: " << names[i] << " , Telephone: " << telephone[i] << endl;
+            }
+        }
+    }
+};
+
+int main() {
+    while (true) {
+        Hashsepratechaining hsc;
+        HashLinearProbing hlp;
+        int choice;
+
+        cout << "\nChoose Collision Solving Method:" << endl;
+        cout << "1) Separate Chaining" << endl;
+        cout << "2) Linear Probing" << endl;
+        cout << "3) Exit Program" << endl;
+        cin >> choice;
+
+        if (choice == 3) break;
+
+        char ch;
+        while (true) {
+            cout << "\nSelect from the Following:" << endl;
+            cout << "1) Insert element" << endl;
+            cout << "2) Search an Element" << endl;
+            cout << "3) Display" << endl;
+            cout << "4) Change Collision Method" << endl;
+            cin >> ch;
+
+            if (ch == '1') {
+                cout << "Enter Name: ";
+                string name;
+                cin >> name;
+                cout << "Enter Telephone number: ";
+                int tele;
+                cin >> tele;
+                if (choice == 1)
+                    hsc.insert(name, tele);
+                else
+                    hlp.insert(name, tele);
+            } else if (ch == '2') {
+                cout << "Enter Telephone number: ";
+                int key;
+                cin >> key;
+                if (choice == 1)
+                    hsc.search(key);
+                else
+                    hlp.search(key);
+            } else if (ch == '3') {
+                if (choice == 1)
+                    hsc.display();
+                else
+                    hlp.display();
+            } else if (ch == '4') {
+                break;  
+            } else {
+                cout << "Invalid Choice!" << endl;
+            }
+        }
+    }
+
+    return 0;
+}

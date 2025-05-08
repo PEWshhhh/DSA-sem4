@@ -1,0 +1,84 @@
+#include <iostream>
+using namespace std;
+
+class Heap {
+private:
+    int *heapArray;
+    int capacity;
+    int size;
+
+    // Helper function to heapify the tree
+    void heapify(int index) {
+        int left = 2 * index + 1;
+        int right = 2 * index + 2;
+        int smallest = index;
+
+        if (left < size && heapArray[left] < heapArray[smallest])
+            smallest = left;
+        if (right < size && heapArray[right] < heapArray[smallest])
+            smallest = right;
+
+        if (smallest != index) {
+            swap(heapArray[index], heapArray[smallest]);
+            heapify(smallest);
+        }
+    }
+
+public:
+    Heap(int cap) {
+        capacity = cap;
+        size = 0;
+        heapArray = new int[capacity];
+    }
+
+    // Insert a new element into the heap
+    void insert(int value) {
+        if (size < capacity) {
+            heapArray[size] = value;
+            size++;
+            for (int i = size / 2 - 1; i >= 0; i--) {
+                heapify(i);
+            }
+        }
+    }
+
+    // Get the minimum element (root of the min-heap)
+    int getMin() {
+        return heapArray[0];
+    }
+
+    // Get the maximum element by converting the min-heap to a max-heap
+    int getMax() {
+        int max = heapArray[0];
+        for (int i = 1; i < size; i++) {
+            if (heapArray[i] > max) {
+                max = heapArray[i];
+            }
+        }
+        return max;
+    }
+
+    // Destructor to free memory
+    ~Heap() {
+        delete[] heapArray;
+    }
+};
+
+int main() {
+    int n, marks;
+    cout << "Enter the number of students: ";
+    cin >> n;
+
+    Heap minHeap(n);
+
+    for (int i = 0; i < n; i++) {
+        cout << "Enter marks for student " << i + 1 << ": ";
+        cin >> marks;
+        minHeap.insert(marks);
+    }
+
+    cout << "Minimum marks obtained: " << minHeap.getMin() << endl;
+    cout << "Maximum marks obtained: " << minHeap.getMax() << endl;
+
+    return 0;
+}

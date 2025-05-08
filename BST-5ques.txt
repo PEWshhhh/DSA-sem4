@@ -1,0 +1,123 @@
+#include <iostream>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// BST class
+class BST {
+private:
+    Node* root;
+
+    Node* insert(Node* node, int val) {
+        if (!node) return new Node(val);
+        if (val < node->data) node->left = insert(node->left, val);
+        else node->right = insert(node->right, val);
+        return node;
+    }
+
+    int findHeight(Node* node) {
+        if (!node) return 0;
+        return 1 + max(findHeight(node->left), findHeight(node->right));
+    }
+
+    int findMin(Node* node) {
+        while (node && node->left) node = node->left;
+        return node ? node->data : -1;
+    }
+
+    void swapTree(Node* node) {
+        if (!node) return;
+        swap(node->left, node->right);
+        swapTree(node->left);
+        swapTree(node->right);
+    }
+
+    bool search(Node* node, int val) {
+        if (!node) return false;
+        if (node->data == val) return true;
+        return val < node->data ? search(node->left, val) : search(node->right, val);
+    }
+
+    void inorder(Node* node) {
+        if (!node) return;
+        inorder(node->left);
+        cout << node->data << " ";
+        inorder(node->right);
+    }
+
+public:
+    BST() : root(NULL) {}
+    void constructTree(int n) {
+        int val;
+        for (int i = 0; i < n; i++) {
+            cin >> val;
+            root = insert(root, val);
+        }
+    }
+    void insert(int val) { root = insert(root, val); }
+    int getLongestPathNodes() { return findHeight(root); }
+    int getMinValue() { return findMin(root); }
+    void swapTree() { swapTree(root); }
+    bool search(int val) { return search(root, val); }
+    void display() {
+        cout << "BST (Inorder Traversal): ";
+        inorder(root);
+        cout << "\n";
+    }
+};
+
+int main() {
+    BST tree;
+    int n, val;
+    
+    cout << "Enter number of elements in BST: ";
+    cin >> n;
+    cout << "Enter elements: ";
+    tree.constructTree(n);
+    
+    int choice;
+    do {
+        cout << "\nMenu:\n1. Insert new node\n2. Find longest path nodes\n3. Find minimum value\n4. Swap left & right pointers\n5. Search a value\n6. Display tree\n7. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> val;
+                tree.insert(val);
+                cout << "Value inserted.\n";
+                break;
+            case 2:
+                cout << "Number of nodes in longest path: " << tree.getLongestPathNodes() << "\n";
+                break;
+            case 3:
+                cout << "Minimum value in BST: " << tree.getMinValue() << "\n";
+                break;
+            case 4:
+                tree.swapTree();
+                cout << "Tree structure swapped.\n";
+                break;
+            case 5:
+                cout << "Enter value to search: ";
+                cin >> val;
+                cout << (tree.search(val) ? "Value found\n" : "Value not found\n");
+                break;
+            case 6:
+                tree.display();
+                break;
+            case 7:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 7);
+    
+    return 0;
+}
+
